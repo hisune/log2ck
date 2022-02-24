@@ -1,6 +1,8 @@
 ## log2ck
 此工具能将monolog标准log直接通过tcp协议写入clickhouse。如果你会写正则，其他标准化log也能支持。
 
+[English readme](https://github.com/hisune/log2ck/blob/main/readme.md)
+
 ### 使用规范
 1. 如果使用默认正则，则需要待读取的日志文件必须是标准的默认monolog日志格式文件，且monolog的`name`和`group`名称不能包含空格
 2. 待读取的日志必须是一行一条，例如monolog需要设置formatter为：`allowInlineLineBreaks' => false`

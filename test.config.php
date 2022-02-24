@@ -31,7 +31,17 @@ return [
 //        ],
     ],
     'tails' => [
-        'access' => [ // key为日志名称，对于clickhouse的name
+        'access1' => [ // key为日志名称，对于clickhouse的name
+            'repo' => 'api2', // 日志所属的项目名称
+            'path' => '/mnt/c/Users/hi/Downloads/test.log', // 日志路径，当前只支持{date}一个宏变量，格式举例：2022-02-22
+//            'pattern' => false,
+//            'callback' => function($data) {
+//                $data['message'] = 'xxoo'; // 自定义处理这个数据
+//                return $data;
+//            }
+//            'path' => '/data/wwwroot/api2/runtime/logs/access-{date}.log', // 日志路径，当前只支持{date}一个宏变量，格式举例：2022-02-22
+        ],
+        'access2' => [ // key为日志名称，对于clickhouse的name
             'repo' => 'api2', // 日志所属的项目名称
             'path' => '/mnt/c/Users/hi/Downloads/test.log', // 日志路径，当前只支持{date}一个宏变量，格式举例：2022-02-22
 //            'pattern' => false,

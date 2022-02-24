@@ -92,7 +92,7 @@ class Manager
                 $path,
                 $this->configPath,
             ]));
-            $cmd = 'nohup ' . ($this->config['env']['bin']['php'] ?? '/usr/bin/php ') . $args . ' > /dev/null 2>&1 & echo $!';
+            $cmd = 'nohup ' . ($this->config['env']['bin']['php'] ?? '/usr/bin/php') . ' ' . $args . ' > /dev/null 2>&1 & echo $!';
             $output = null;
             exec($cmd, $output);
             $pid = (int)$output[0];

@@ -80,6 +80,7 @@ stdout_logfile=/data/logs/out.log
 ```
 
 ### clickhouse日志表结构
+如果使用monolog并且使用的是默认正则，可直接使用下面的表结构，如果是自定义正则，可以根据自己的正则匹配结果自定义自己的clickhouse表结构。
 ```clickhouse
 create table repo
 (

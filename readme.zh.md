@@ -1,5 +1,5 @@
 ## log2ck
-此工具能将monolog标准log直接通过tcp协议写入clickhouse。如果你会写正则，其他标准化log也能支持。
+此工具能将monolog标准log直接通过tcp协议实时写入clickhouse。如果你会写正则，其他标准化log也能支持。
 
 [English readme](https://github.com/hisune/log2ck/blob/main/readme.md)
 
@@ -80,7 +80,7 @@ stdout_logfile=/data/logs/out.log
 ```
 
 ### clickhouse日志表结构
-```sql
+```clickhouse
 create table repo
 (
     repo       LowCardinality(String) comment '项目名称',

@@ -1,5 +1,5 @@
 ## log2ck
-This tool can write the monolog standard log directly to clickhouse via the tcp protocol. If you can write regular rules, other standardized log can also support it.
+This tool can write the monolog standard log directly to clickhouse in real time via the tcp protocol. If you can write regular rules, other standardized log can also support it.
 
 [中文readme](https://github.com/hisune/log2ck/blob/main/readme.zh.md)
 
@@ -80,7 +80,7 @@ stdout_logfile=/data/logs/out.log
 ```
 
 ### clickhouse Log table structure
-```sql
+```clickhouse
 create table repo
 (
     repo       LowCardinality(String) comment 'Project name',

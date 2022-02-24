@@ -20,6 +20,8 @@ This tool can write the monolog standard log directly to clickhouse via the tcp 
 ```php
 composer require "hisune/log2ck"
 # vim manager.php
+use Hisune\Log2Ck\Manager;
+require_once 'vendor/autoload.php';
 (new Manager(__DIR__ . DIRECTORY_SEPARATOR . 'config.php'))->run();
 # php manager.php
 ```

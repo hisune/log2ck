@@ -1,0 +1,31 @@
+{
+    "name": "hisune/log2ck",
+    "type": "library",
+    "description": "Read file log to clickhouse in real time.",
+    "keywords": ["clickhouse", "log", "log2ck"],
+    "homepage": "https://github.com/hisune/log2ck",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Hisune",
+            "email": "hi@hisune.com",
+            "homepage": "http://hisune.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=7.2",
+        "ext-swoole": ">=4.5",
+        "ext-json": "*",
+        "smi2/phpclickhouse": "^1.4",
+        "ext-pcntl": "*"
+    },
+    "require-dev": {
+        "swoole/ide-helper": "^4.5"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hisune\\Log2Ck\\": "src/"
+        }
+    }
+}

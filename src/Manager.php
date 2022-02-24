@@ -92,8 +92,10 @@ class Manager
                 $path,
                 $this->configPath,
             ]));
-            $cmd = $this->config['env']['bin']['php'] ?? '/usr/bin/php ' . $args . ' > /dev/null 2>&1 & echo $!;';
-            $pid = exec($cmd);
+            $cmd = 'nohup ' . ($this->config['env']['bin']['php'] ?? '/usr/bin/php ') . $args . ' > /dev/null 2>&1 & echo $!';
+            $output = null;
+            exec($cmd, $output);
+            $pid = (int)$output[0];
             $this->workers[$name] = [
                 'pid' => $pid,
                 'daily_log' => $dailyLog,

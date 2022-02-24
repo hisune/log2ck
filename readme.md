@@ -80,6 +80,7 @@ stdout_logfile=/data/logs/out.log
 ```
 
 ### clickhouse Log table structure
+If you use monolog and use the default regular rules, you can directly use the following table structure. If you have a custom regular, you can customize your own clickhouse table structure based on your own regular matching results.
 ```clickhouse
 create table repo
 (

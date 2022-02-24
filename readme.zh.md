@@ -3,10 +3,6 @@
 
 [English readme](https://github.com/hisune/log2ck/blob/main/readme.md)
 
-### 使用规范
-1. 如果使用默认正则，则需要待读取的日志文件必须是标准的默认monolog日志格式文件，且monolog的`name`和`group`名称不能包含空格
-2. 待读取的日志必须是一行一条，例如monolog需要设置formatter为：`allowInlineLineBreaks' => false`
-
 ### 特性
 - 极简代码
 - 高性能(在线上业务中对比cpu占用仅为`filebeat`的1/20)
@@ -15,6 +11,10 @@
 - 定制化(自定义正则、行处理回调函数)
 - 支持读取按天分割的log
 - 支持断点续传采集
+
+### 使用规范
+1. 如果使用默认正则，则需要待读取的日志文件必须是标准的默认monolog日志格式文件，且monolog的`name`和`group`名称不能包含空格
+2. 待读取的日志必须是一行一条，例如monolog需要设置formatter为：`allowInlineLineBreaks' => false`
 
 ### 使用方法
 ```php

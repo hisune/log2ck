@@ -68,7 +68,7 @@ class Worker
                     // 自定义正则或使用默认正则
                     $pattern = $this->getPattern();
                     if($pattern){
-                        preg_match($pattern, $line, $data, PREG_UNMATCHED_AS_NULL);
+                        preg_match($pattern, $line, $data);
                         $data = array_filter($data, 'is_string', ARRAY_FILTER_USE_KEY);
                     }else{
                         $data = $line;

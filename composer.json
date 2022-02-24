@@ -14,14 +14,10 @@
         }
     ],
     "require": {
-        "php": ">=7.2",
-        "ext-swoole": ">=4.5",
+        "php": ">=7.0",
         "ext-json": "*",
         "smi2/phpclickhouse": "^1.4",
         "ext-pcntl": "*"
-    },
-    "require-dev": {
-        "swoole/ide-helper": "^4.5"
     },
     "autoload": {
         "psr-4": {

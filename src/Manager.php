@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace Hisune\Log2Ck;
 
 if (php_sapi_name() != 'cli') exit();
-use Swoole\Process;
 
 class Manager
 {
@@ -49,12 +48,11 @@ class Manager
         pcntl_signal(SIGINT, [$this, 'stopManager']);
     }
 
-    protected function killWorker(string $name, $pid)
+    protected function killWorker(string $name, $worker)
     {
-        $cmd = "pkill -f '".__DIR__ . DIRECTORY_SEPARATOR . 'Worker.php'." {$name}'";
+        $cmd = "kill " . $worker['pid'];
         exec($cmd);
-        Process::kill($pid);
-        $this->logger('manager', sprintf('killed pid %s, worker %s: %s', $pid, $name, $cmd));
+        $this->logger('manager', sprintf('killed worker %s: %s', $name, $cmd));
     }
 
     protected function processTail()
@@ -69,7 +67,7 @@ class Manager
             if(isset($this->workers[$name]['daily_log'])){
                 if($this->workers[$name]['daily_log'] && $today != $this->workers[$name]['today'] && time() - mktime(0,0,0) > 10){
                     // kill掉子进程，走后面的创建子进程逻辑
-                    $this->killWorker($name, $this->workers[$name]['pid']);
+                    $this->killWorker($name, $this->workers[$name]);
                 }else{
                     continue;
                 }
@@ -88,19 +86,19 @@ class Manager
                 continue;
             }
             $this->logger('manager', sprintf('start process %s with %s', $name, $path));
-            $process = new Process(function(Process $worker) use ($name, $path){
-                $worker->exec($this->config['env']['bin']['php'] ?? '/usr/bin/php', [
-                    __DIR__ . DIRECTORY_SEPARATOR . 'Worker.php',
-                    $name,
-                    $path,
-                    $this->configPath,
-                ]);
-            }, true);
-            $pid = $process->start();
+            $args = join(' ', array_map('escapeshellarg', [
+                __DIR__ . DIRECTORY_SEPARATOR . 'Worker.php',
+                $name,
+                $path,
+                $this->configPath,
+            ]));
+            $cmd = $this->config['env']['bin']['php'] ?? '/usr/bin/php ' . $args . ' > /dev/null 2>&1 & echo $!;';
+            $pid = exec($cmd);
             $this->workers[$name] = [
                 'pid' => $pid,
                 'daily_log' => $dailyLog,
                 'today' => $today,
+                'cmd' => $cmd,
             ];
             $this->logger('manager', 'stared process ' . $name, $this->workers[$name]);
         }
@@ -109,7 +107,7 @@ class Manager
     protected function stopManager()
     {
         foreach($this->workers as $name => $worker){
-            $this->killWorker($name, $worker['pid']);
+            $this->killWorker($name, $worker);
         }
         exit();
     }

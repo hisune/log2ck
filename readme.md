@@ -1,60 +1,62 @@
 ## log2ck
-此工具能将monolog标准log直接通过tcp协议写入clickhouse。如果你会写正则，其他标准化log也能支持。
+This tool can write the monolog standard log directly to clickhouse via the tcp protocol. If you can write regular rules, other standardized log can also support it.
 
-### 使用规范
-1. 如果使用默认正则，则需要待读取的日志文件必须是标准的默认monolog日志格式文件，且monolog的name和group名称不能包含空格
-2. 待读取的日志必须是一行一条，例如monolog需要设置formatter为：`allowInlineLineBreaks' => false`
+[中文readme](https://github.com/hisune/log2ck/blob/main/readme.zh.md)
 
-### 特性
-- 极简代码
-- 高性能(在线上业务中对比cpu占用仅为filebeat的1/20)
-- 无第三方服务依赖（例如队列等）
-- 配置化
-- 定制化(自定义正则、行处理回调函数)
-- 支持读取按天分割的log
-- 支持断点续传采集
+### Usage specification
+1. If you use the default regularity, the log file that needs to be read must be the standard default monolog log format file, and the monolog name and group name cannot contain spaces.
+2. The log to be read must be one line at a time. For example, monolog needs to set the formatter to: 'allowInlineLineBreaks'= > false`
 
-### 使用方法
+### Feature
+-Minimalist code
+-High performance (compared with online services, the cpu usage is only 1/20 of filebeat)
+-No dependence on third-party services (such as queues, etc.)
+-Configurationalization
+-Customization (custom regularization, line processing callback functions)
+-Support reading log divided by day
+-Support breakpoint resume collection
+
+### How to use
 ```php
-composer install
+composer require "hisune/log2ck"
 # vim manager.php
 (new Manager(__DIR__ . DIRECTORY_SEPARATOR . 'config.php'))->run();
 # php manager.php
 ```
 
-### config.php配置举例
+### config.php Configuration example
 ```php
 return [
-    'env' => [ // 系统环境变量
+    'env' => [ // System environment variables
 //        'bin' => [
-//            'php' => '/usr/bin/php', // 可选配置，php bin文件所属路径
+//            'php' => '/usr/bin/php', // Optional configuration, the path to which the php bin file belongs
 //        ],
-        'clickhouse' => [ // 必须的配置
+        'clickhouse' => [ // Required configuration
             'server' => [
                 'host' => '192.168.37.205',
                 'port' => '8123',
                 'username' => 'default',
                 'password' => '',
             ],
-            'database' => 'logs', // 入库名称
-            'table' => 'repo', // 入库表
+            'database' => 'logs', // Database name
+            'table' => 'repo', // Table name
         ],
 //        'worker' => [
-//            'cache_path' => '/dev/shm/', // 可选配置，worker缓存目录
+//            'cache_path' => '/dev/shm/', // Optional configuration, worker cache directory
 //        ],
 //        'logger' => [
-//            'enable' => true, // 可选配置，是否记录日志
-//            'path' => __DIR__ . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR, // 指定记录日志的目录，可选配置，需要以/结尾
+//            'enable' => true, // Optional configuration, whether to record logs
+//            'path' => __DIR__ . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR, // Specify the directory where the logs are logged, optional configuration, and need to end with /
 //        ],
     ],
     'tails' => [
-        'access' => [ // key为日志名称，对于clickhouse的name
-            'repo' => 'api2', // 日志所属的项目名称
-            'path' => '/mnt/c/access.log', // 日志路径，固定文件名日志
-//            'path' => '/mnt/c/access-{date}.log', // 日志路径，每日一个文件名的日志，当前只支持{date}一个宏变量，date格式举例：2022-02-22
-//            'pattern' => '/\[(?P<created_at>.*)\] (?P<logger>\w+).(?P<level>\w+): (?P<message>.*[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/', // 可选配置，如果不需要正则处理，设置为false
-//            'callback' => function($data) { // 可选配置，对这行数据按自定义回调方法进行处理，方法内容可以自行实现任何清洗此条流水的逻辑
-//                $data['message'] = 'xxoo'; // 举例，自定义处理这个数据
+        'access' => [ // Key is the log name, which corresponds to the name of clickhouse
+            'repo' => 'api2', // The name of the project to which the log belongs
+            'path' => '/mnt/c/access.log', // Log path, fixed file name log
+//            'path' => '/mnt/c/access-{date}.log', // Log path, a daily log with a file name, currently only one macro variable {date} is supported. For example, the date format: 2022-02-22
+//            'pattern' => '/\[(?P<created_at>.*)\] (?P<logger>\w+).(?P<level>\w+): (?P<message>.*[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/', // Optional configuration, if regular processing is not required, set to false
+//            'callback' => function($data) { // Optional configuration, this line of data is processed according to a custom callback method, and the content of the method can implement any logic for cleaning this stream by itself.
+//                $data['message'] = 'xxoo'; // For example, customize the processing of this data
 //                return $data;
 //            }
         ],
@@ -75,13 +77,13 @@ stderr_logfile=/data/logs/err.log
 stdout_logfile=/data/logs/out.log
 ```
 
-### clickhouse日志表结构
+### clickhouse Log table structure
 ```sql
 create table repo
 (
-    repo       LowCardinality(String) comment '项目名称',
-    name       LowCardinality(String) comment '日志名称',
-    host       LowCardinality(String) comment '日志产生的机器',
+    repo       LowCardinality(String) comment 'Project name',
+    name       LowCardinality(String) comment 'Log name',
+    host       LowCardinality(String) comment 'The machine where the log is generated',
     created_at DateTime,
     logger     LowCardinality(String),
     level      LowCardinality(String),
@@ -93,7 +95,7 @@ create table repo
       ORDER BY (created_at, repo, host)
       TTL created_at + INTERVAL 10 DAY;
 ```
-如果你的message或context的内容是`json`，可以参考clickhouse的json查询函数：https://clickhouse.com/docs/en/sql-reference/functions/json-functions/
+If the content of your message or context is `json`, you can refer to clickhouse's json query function:https://clickhouse.com/docs/en/sql-reference/functions/json-functions/
 
 ### TODO
-- 进一步提升写入性能：单次插入改为批量插入
+- Further improve write performance: single insert is changed to batch insert

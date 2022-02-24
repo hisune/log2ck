@@ -8,13 +8,13 @@ This tool can write the monolog standard log directly to clickhouse via the tcp 
 2. The log to be read must be one line at a time. For example, monolog needs to set the formatter to: 'allowInlineLineBreaks'= > false`
 
 ### Feature
--Minimalist code
--High performance (compared with online services, the cpu usage is only 1/20 of filebeat)
--No dependence on third-party services (such as queues, etc.)
--Configurationalization
--Customization (custom regularization, line processing callback functions)
--Support reading log divided by day
--Support breakpoint resume collection
+- Minimalist code
+- High performance (compared with online services, the cpu usage is only 1/20 of filebeat)
+- No dependence on third-party services (such as queues, etc.)
+- Configurationalization
+- Customization (custom regularization, line processing callback functions)
+- Support reading log divided by day
+- Support breakpoint resume collection
 
 ### How to use
 ```php

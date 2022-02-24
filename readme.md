@@ -4,12 +4,12 @@ This tool can write the monolog standard log directly to clickhouse via the tcp 
 [中文readme](https://github.com/hisune/log2ck/blob/main/readme.zh.md)
 
 ### Usage specification
-1. If you use the default regularity, the log file that needs to be read must be the standard default monolog log format file, and the monolog name and group name cannot contain spaces.
-2. The log to be read must be one line at a time. For example, monolog needs to set the formatter to: 'allowInlineLineBreaks'= > false`
+1. If you use the default regularity, the log file that needs to be read must be the standard default monolog log format file, and the monolog `name` and `group` name cannot contain spaces.
+2. The log to be read must be one line at a time. For example, monolog needs to set the formatter to: `'allowInlineLineBreaks'= > false`
 
 ### Feature
 - Minimalist code
-- High performance (compared with online services, the cpu usage is only 1/20 of filebeat)
+- High performance (compared with online services, the cpu usage is only 1/20 of `filebeat`)
 - No dependence on third-party services (such as queues, etc.)
 - Configurationalization
 - Customization (custom regularization, line processing callback functions)

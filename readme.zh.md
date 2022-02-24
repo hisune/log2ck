@@ -2,12 +2,12 @@
 此工具能将monolog标准log直接通过tcp协议写入clickhouse。如果你会写正则，其他标准化log也能支持。
 
 ### 使用规范
-1. 如果使用默认正则，则需要待读取的日志文件必须是标准的默认monolog日志格式文件，且monolog的name和group名称不能包含空格
+1. 如果使用默认正则，则需要待读取的日志文件必须是标准的默认monolog日志格式文件，且monolog的`name`和`group`名称不能包含空格
 2. 待读取的日志必须是一行一条，例如monolog需要设置formatter为：`allowInlineLineBreaks' => false`
 
 ### 特性
 - 极简代码
-- 高性能(在线上业务中对比cpu占用仅为filebeat的1/20)
+- 高性能(在线上业务中对比cpu占用仅为`filebeat`的1/20)
 - 无第三方服务依赖（例如队列等）
 - 配置化
 - 定制化(自定义正则、行处理回调函数)

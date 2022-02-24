@@ -67,6 +67,7 @@ return [
 ```
 
 ### supervisord
+It is recommended to use supervisor to manage your manager process.
 ```conf
 [program:log2ck]
 directory=/data/log2ck

@@ -48,11 +48,12 @@ class Manager
         pcntl_signal(SIGINT, [$this, 'stopManager']);
     }
 
-    protected function killWorker(string $name, $worker)
+    protected function killWorker(string $name)
     {
-        $cmd = "kill " . $worker['pid'];
+        $cmd = "kill " . $this->workers[$name]['pid'];
         exec($cmd);
         $this->logger('manager', sprintf('killed worker %s: %s', $name, $cmd));
+        unset($this->workers[$name]);
     }
 
     protected function processTail()
@@ -67,7 +68,7 @@ class Manager
             if(isset($this->workers[$name]['daily_log'])){
                 if($this->workers[$name]['daily_log'] && $today != $this->workers[$name]['today'] && time() - mktime(0,0,0) > 10){
                     // kill掉子进程，走后面的创建子进程逻辑
-                    $this->killWorker($name, $this->workers[$name]);
+                    $this->killWorker($name);
                 }else{
                     continue;
                 }
@@ -109,7 +110,7 @@ class Manager
     protected function stopManager()
     {
         foreach($this->workers as $name => $worker){
-            $this->killWorker($name, $worker);
+            $this->killWorker($name);
         }
         exit();
     }

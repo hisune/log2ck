@@ -61,6 +61,7 @@ class Manager
         $today = date('Y-m-d');
 
         foreach($this->config['tails'] as $name => $tail){
+            $index = null; // 是否指定文件开始的index
             /**
              * 判断是否已经跨天了
              * time() - mktime()为延迟几秒，防止前一个log内容没写完导致上报不完整
@@ -69,6 +70,7 @@ class Manager
                 if($this->workers[$name]['daily_log'] && $today != $this->workers[$name]['today'] && time() - mktime(0,0,0) > 10){
                     // kill掉子进程，走后面的创建子进程逻辑
                     $this->killWorker($name);
+                    $index = 0;
                 }else{
                     continue;
                 }
@@ -87,12 +89,16 @@ class Manager
                 continue;
             }
             $this->logger('manager', sprintf('start process %s with %s', $name, $path));
-            $args = join(' ', array_map('escapeshellarg', [
+            $argsArray = [
                 __DIR__ . DIRECTORY_SEPARATOR . 'Worker.php',
                 $name,
                 $path,
                 $this->configPath,
-            ]));
+            ];
+            if(!is_null($index)){
+                $argsArray = array_merge($argsArray, [$index]);
+            }
+            $args = join(' ', array_map('escapeshellarg', $argsArray));
             $cmd = 'nohup ' . ($this->config['env']['bin']['php'] ?? '/usr/bin/php') . ' ' . $args . ' > /dev/null 2>&1 & echo $!';
             $output = null;
             exec($cmd, $output);

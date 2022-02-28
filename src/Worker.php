@@ -31,13 +31,23 @@ class Worker
 
     protected $cacheFilePath;
 
-    public function __construct(string $name, string $path, string $configPath)
+    /**
+     * @param string $name 日志名称，tails中的数组key
+     * @param string $path 日志路径
+     * @param string $configPath 配置文件路径
+     * @param int|null $index 可选，开始tail的index，从0开始
+     * @throws \Exception
+     */
+    public function __construct(string $name, string $path, string $configPath, int $index = null)
     {
         $this->initConfig($configPath);
         $this->name = $name;
         $this->path = $path;
         $this->tail = $this->config['tails'][$name];
         $this->cacheFilePath = ($this->config['env']['worker']['cache_path'] ?? '/dev/shm/') . 'log2ck_worker_'. $name .'.cache';
+        if(!is_null($index)){
+            $this->setCurrentLines($index);
+        }
     }
 
     protected function initClickhouse()
@@ -134,4 +144,5 @@ class Worker
 
 }
 
-(new Worker($argv[1], $argv[2], $argv[3]))->run();
+$index = isset($argv[4]) ? intval($argv[4]) :  null;
+(new Worker($argv[1], $argv[2], $argv[3], $index))->run();

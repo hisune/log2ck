@@ -7,9 +7,11 @@ trait ToolsTraits
 
     protected $configPath;
 
+    protected $loggerDir;
+
     protected function initConfig($configPath)
     {
-        ini_set('error_log', __DIR__ . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR . 'manager_error.log');
+        ini_set('error_log', $this->getLoggerDir() . 'error.log');
 
         if(!file_exists($configPath)) throw new \Exception('config file not found');
         $this->configPath = $configPath;
@@ -24,11 +26,18 @@ trait ToolsTraits
         $line = date('Y-m-d H:i:s') . "\t" . $message . "\t" . (!is_scalar($context) ? json_encode($context, JSON_UNESCAPED_UNICODE) : $context) . PHP_EOL;
         echo $line;
         if(!isset($this->config['env']['logger']['enable']) || $this->config['env']['logger']['enable']){
-            $logDir = $this->config['env']['logger']['path'] ?? __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR;
-            if(!file_exists($logDir)) mkdir($logDir);
-            error_log($line, 3, $logDir . $name . '-' . date('Y-m-d') . '.log');
+            error_log($line, 3, $this->getLoggerDir() . $name . '-' . date('Y-m-d') . '.log');
         }
 
+    }
+
+    protected function getLoggerDir()
+    {
+        if(is_null($this->loggerDir)) {
+            $this->loggerDir = $this->config['env']['logger']['path'] ?? __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'logs' . DIRECTORY_SEPARATOR;
+            if(!file_exists($this->loggerDir)) mkdir($this->loggerDir);
+        }
+        return $this->loggerDir;
     }
 
 }

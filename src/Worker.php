@@ -90,7 +90,7 @@ class Worker
                         if(is_array($data)){
                             $data['repo'] = $this->tail['repo'];
                             $data['name'] = $this->name;
-                            $data['host'] = gethostname();
+                            $data['host'] = $this->tail['host'] ?? gethostname();
                             $this->db->insert($this->getClickhouseParam('table'), [$data], array_keys($data));
                         }else{
                             $this->logger('worker', sprintf('not valid data: %s, stdin: %s', $this->tail['path'], json_encode($data)));

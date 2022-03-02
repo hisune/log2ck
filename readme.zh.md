@@ -5,10 +5,10 @@
 
 ### 特性
 - 极简代码
-- 高性能(在线上业务中对比cpu占用仅为`filebeat`的1/20)
+- 高性能（在线上业务中对比cpu占用仅为`filebeat`的1/20）
 - 无第三方服务依赖（例如队列等）
 - 配置化
-- 定制化(自定义正则、行处理回调函数)
+- 定制化（自定义正则、行处理回调函数）
 - 支持读取按天分割的log
 - 支持断点续传采集
 
@@ -52,15 +52,17 @@ return [
 //        ],
     ],
     'tails' => [
-        'access' => [ // key为日志名称，对应于clickhouse的name
+        'access' => [ // key为日志名称，对应clickhouse的name字段
             'repo' => 'api2', // 日志所属的项目名称
             'path' => '/mnt/c/access.log', // 日志路径，固定文件名日志
+//            'host' => 'host1', // 自定义hostname，未设置默认为服务器主机名，对应clickhouse的host字段
 //            'path' => '/mnt/c/access-{date}.log', // 日志路径，每日一个文件名的日志，当前只支持{date}一个宏变量，date格式举例：2022-02-22
 //            'pattern' => '/\[(?P<created_at>.*)\] (?P<logger>\w+).(?P<level>\w+): (?P<message>.*[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/', // 可选配置，如果不需要正则处理，设置为false
 //            'callback' => function($data) { // 可选配置，对这行数据按自定义回调方法进行处理，方法内容可以自行实现任何清洗此条流水的逻辑
 //                $data['message'] = 'xxoo'; // 举例，自定义处理这个数据
 //                return $data;
 //            }
+//            'clickhouse' => [...] // 也可以对单独的项目配置clickhouse连接信息，配置内容同env的clickhouse数组
         ],
     ],
 ];

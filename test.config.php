@@ -31,9 +31,10 @@ return [
 //        ],
     ],
     'tails' => [
-        'access1' => [ // key为日志名称，对于clickhouse的name
+        'access1' => [ // key为日志名称，对应clickhouse的name字段
             'repo' => 'api2', // 日志所属的项目名称
             'path' => '/mnt/c/Users/hi/Downloads/test.log', // 日志路径，当前只支持{date}一个宏变量，格式举例：2022-02-22
+//            'host' => 'host1', // 自定义hostname，未设置默认为服务器主机名，对应clickhouse的host字段
 //            'pattern' => false,
 //            'callback' => function($data) {
 //                $data['message'] = 'xxoo'; // 自定义处理这个数据

@@ -2,9 +2,9 @@
     "name": "hisune/log2ck",
     "type": "library",
     "description": "Read file log to clickhouse in real time.",
-    "keywords": ["clickhouse", "log", "log2ck", "monolog"],
-    "homepage": "https://github.com/hisune/log2ck",
-    "license": "MIT",
+    "keywords": ["clickhouse", "log", "log2ck", "realtime", "monolog"],
+    "homepage": "https://hisune.com",
+    "license": "Apache-2.0",
     "authors": [
         {
             "name": "Hisune",

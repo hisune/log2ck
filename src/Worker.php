@@ -73,7 +73,7 @@ class Worker
                     continue;
                 }
                 $file->next(); // 指针+1
-                $line = trim($line);
+                $line = rtrim($line, PHP_EOL);
                 if($line){
                     // 自定义正则或使用默认正则
                     $pattern = $this->getPattern();

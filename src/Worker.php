@@ -31,6 +31,8 @@ class Worker
 
     protected $cacheFilePath;
 
+    protected $onProcess = true;
+
     /**
      * @param string $name 日志名称，tails中的数组key
      * @param string $path 日志路径
@@ -59,13 +61,15 @@ class Worker
     public function run()
     {
         try{
+            $this->handelSignal();
+
             $this->logger('worker', sprintf('start worker name: %s, path %s, config %s', $this->name, $this->path, $this->configPath));
             $this->initClickhouse();
             $this->logger('worker', sprintf('receive stdin: %s', $this->name));
 
             $file = new SplFileObject($this->path);
             $file->seek($this->getCurrentLines());
-            while(true){
+            while($this->onProcess){
                 $line = $file->current();
                 if($file->eof()){ // 没有新内容
                     sleep(1);
@@ -140,6 +144,12 @@ class Worker
     protected function getClickhouseParam(string $key)
     {
         return $this->tail['clickhouse'][$key] ?? $this->config['env']['clickhouse'][$key];
+    }
+
+    protected function stopProcess()
+    {
+        $this->logger('worker', sprintf('stop process %s gracefully', $this->name));
+        $this->onProcess = false;
     }
 
 }

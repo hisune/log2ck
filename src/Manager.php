@@ -28,7 +28,6 @@ class Manager
             while (true) {
                 $this->processTail();
                 sleep(10);
-                pcntl_signal_dispatch();
             }
         }catch (\Throwable $e){
             $this->logger('mamager', sprintf('manager_exception: %s', $e->getMessage()), [
@@ -39,13 +38,6 @@ class Manager
             sleep(10);
             $this->run();
         }
-    }
-
-    protected function handelSignal()
-    {
-        pcntl_signal(SIGTERM, [$this, 'stopManager']);
-        pcntl_signal(SIGHUP, [$this, 'stopManager']);
-        pcntl_signal(SIGINT, [$this, 'stopManager']);
     }
 
     protected function killWorker(string $name)
@@ -113,7 +105,7 @@ class Manager
         }
     }
 
-    protected function stopManager()
+    protected function stopProcess()
     {
         foreach($this->workers as $name => $worker){
             $this->killWorker($name);

@@ -1,6 +1,8 @@
 <?php
 namespace Hisune\Log2Ck;
 
+use Exception;
+
 trait ToolsTraits
 {
     protected $config;
@@ -13,12 +15,12 @@ trait ToolsTraits
     {
         ini_set('error_log', $this->getLoggerDir() . 'error.log');
 
-        if(!file_exists($configPath)) throw new \Exception('config file not found');
+        if(!file_exists($configPath)) throw new Exception('config file not found');
         $this->configPath = $configPath;
         $this->config = require_once $configPath;
 
-        if(!isset($this->config['env']['clickhouse']['server']) || !is_array($this->config['env']['clickhouse']['server'])) throw new \Exception('not a valid clickhouse srever config');
-        if(!isset($this->config['tails']) || !is_array($this->config['tails'])) throw new \Exception('not a valid tails config');
+        if(!isset($this->config['env']['clickhouse']['server']) || !is_array($this->config['env']['clickhouse']['server'])) throw new Exception('not a valid clickhouse srever config');
+        if(!isset($this->config['tails']) || !is_array($this->config['tails'])) throw new Exception('not a valid tails config');
     }
 
     protected function logger(string $name, string $message, $context = [])

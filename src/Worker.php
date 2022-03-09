@@ -9,7 +9,9 @@ declare(strict_types=1);
 namespace Hisune\Log2Ck;
 
 use ClickHouseDB\Client;
+use Exception;
 use SplFileObject;
+use Throwable;
 
 if (php_sapi_name() != 'cli') exit();
 
@@ -38,7 +40,7 @@ class Worker
      * @param string $path 日志路径
      * @param string $configPath 配置文件路径
      * @param int|null $index 可选，开始tail的index，从0开始
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(string $name, string $path, string $configPath, int $index = null)
     {
@@ -105,7 +107,7 @@ class Worker
                 }
                 $this->setCurrentLines($file->key()); // 记录最后位置
             }
-        }catch (\Throwable $e){
+        }catch (Throwable $e){
             $this->logger('worker', sprintf('%s worker_exception: %s', $this->name, $e->getMessage()), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),

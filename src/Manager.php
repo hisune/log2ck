@@ -7,6 +7,8 @@
 declare(strict_types=1);
 namespace Hisune\Log2Ck;
 
+use Throwable;
+
 if (php_sapi_name() != 'cli') exit();
 
 class Manager
@@ -29,7 +31,7 @@ class Manager
                 $this->processTail();
                 sleep(10);
             }
-        }catch (\Throwable $e){
+        }catch (Throwable $e){
             $this->logger('mamager', sprintf('manager_exception: %s', $e->getMessage()), [
                 'file' => $e->getFile(),
                 'line' => $e->getLine(),

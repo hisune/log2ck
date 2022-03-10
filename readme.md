@@ -12,7 +12,8 @@ This tool can write the monolog standard log directly to clickhouse in real time
 - Configurationalization
 - Customization (custom regularization, line processing callback functions)
 - Support reading log divided by day
-- Support breakpoint resume collection
+- Support automatic breakpoint resume collection, and smooth restart
+- Support batch insert data
 
 ### Usage specification
 1. If you use the default regularity, the log file that needs to be read must be the standard default monolog log format file, and the monolog `name` and `group` name cannot contain spaces.

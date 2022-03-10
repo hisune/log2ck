@@ -35,6 +35,12 @@ class Worker
 
     protected $onProcess = true;
 
+    protected $sentLastAt;
+
+    protected $sentCount = 0;
+
+    protected $sentData = [];
+
     /**
      * @param string $name 日志名称，tails中的数组key
      * @param string $path 日志路径
@@ -56,7 +62,13 @@ class Worker
 
     protected function initClickhouse()
     {
-        $this->db = new Client($this->getClickhouseParam('dsn'), $this->getClickhouseParam('username'), $this->getClickhouseParam('password'), $this->getClickhouseParam('database'));
+        $this->db = new Client(
+            $this->getClickhouseParam('dsn'),
+            $this->getClickhouseParam('username'),
+            $this->getClickhouseParam('password'),
+            $this->getClickhouseParam('database'),
+            $this->getClickhouseParam('options')
+        );
     }
 
     public function run()
@@ -70,7 +82,16 @@ class Worker
 
             $file = new SplFileObject($this->path);
             $file->seek($this->getCurrentLines());
+            $this->sentLastAt = time();
             while($this->onProcess){
+                $now = time();
+                if($this->sentData && ($this->sentCount >= $this->getClickhouseParam('max_sent_count') || $now - $this->sentLastAt >  $this->getClickhouseParam('max_sent_wait'))){
+                    $this->db->insert($this->getClickhouseParam('table'), $this->sentData);
+                    $this->setCurrentLines($file->key()); // 记录最后位置
+                    $this->sentCount = 0;
+                    $this->sentData = [];
+                    $this->sentLastAt = $now;
+                }
                 $line = $file->current();
                 if($file->eof()){ // 没有新内容
                     sleep(1);
@@ -96,7 +117,8 @@ class Worker
                             $data['repo'] = $this->tail['repo'];
                             $data['name'] = $this->name;
                             $data['host'] = $this->tail['host'] ?? gethostname();
-                            $this->db->insert($this->getClickhouseParam('table'), [$data]);
+                            $this->sentCount++;
+                            $this->sentData[] = $data;
                         }else{
                             $this->logger('worker', sprintf('not valid data: %s, stdin: %s', $this->tail['path'], json_encode($data)));
                         }
@@ -104,7 +126,6 @@ class Worker
                         $this->logger('worker', sprintf('not valid line: %s, stdin: %s', $this->tail['path'], $line));
                     }
                 }
-                $this->setCurrentLines($file->key()); // 记录最后位置
             }
         }catch (Throwable $e){
             $this->logger('worker', sprintf('%s worker_exception: %s', $this->name, $e->getMessage()), [

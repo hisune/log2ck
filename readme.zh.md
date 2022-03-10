@@ -39,8 +39,16 @@ return [
             'dsn' => 'tcp://192.168.37.205:9000',
             'username' => 'default',
             'password' => '',
-            'database' => 'logs', // 入库名称
-            'table' => 'repo', // 入库表
+            'options' => [
+                'connect_timeout' => 3,
+                'socket_timeout'  => 30,
+                'tcp_nodelay'     => true,
+                'persistent'      => true,
+            ],
+            'database' => 'logs', // Database name
+            'table' => 'repo', // Table name
+            'max_sent_count' => 100, // 单批数据达到多少条时执行插入
+            'max_sent_wait' => 10, // 如果单批数据条数不满足，则最少多少秒执行一次插入
         ],
 //        'worker' => [
 //            'cache_path' => '/dev/shm/', // 可选配置，worker缓存目录

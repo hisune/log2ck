@@ -39,8 +39,16 @@ return [
             'dsn' => 'tcp://192.168.37.205:9000',
             'username' => 'default',
             'password' => '',
+            'options' => [
+                'connect_timeout' => 3,
+                'socket_timeout'  => 30,
+                'tcp_nodelay'     => true,
+                'persistent'      => true,
+            ],
             'database' => 'logs', // Database name
             'table' => 'repo', // Table name
+            'max_sent_count' => 100, // Insert when there are many pieces of data in a single batch
+            'max_sent_wait' => 10, // If the number of data items in a single batch is not satisfied, the insertion will be performed at least once in how many seconds
         ],
 //        'worker' => [
 //            'cache_path' => '/dev/shm/', // Optional configuration, worker cache directory

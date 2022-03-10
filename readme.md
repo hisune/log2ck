@@ -109,6 +109,3 @@ create table repo
       TTL created_at + INTERVAL 10 DAY;
 ```
 If the content of your message or context is `json`, you can refer to clickhouse's json query function:https://clickhouse.com/docs/en/sql-reference/functions/json-functions/
-
-### TODO
-- Further improve write performance: single insert is changed to batch insert

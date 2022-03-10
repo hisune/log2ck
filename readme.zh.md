@@ -109,6 +109,3 @@ create table repo
       TTL created_at + INTERVAL 10 DAY;
 ```
 如果你的message或context的内容是`json`，可以参考clickhouse的json查询函数：https://clickhouse.com/docs/en/sql-reference/functions/json-functions/
-
-### TODO
-- 进一步提升写入性能：单次插入改为批量插入

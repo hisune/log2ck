@@ -14,10 +14,10 @@
         }
     ],
     "require": {
-        "php": ">=7.1",
-        "smi2/phpclickhouse": ">=1.3",
+        "php": ">=7.2",
         "ext-json": "*",
-        "ext-pcntl": "*"
+        "ext-pcntl": "*",
+        "lizhichao/one-ck": "^0.2.9"
     },
     "autoload": {
         "psr-4": {

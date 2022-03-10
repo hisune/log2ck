@@ -19,7 +19,7 @@ trait ToolsTraits
         $this->configPath = $configPath;
         $this->config = require_once $configPath;
 
-        if(!isset($this->config['env']['clickhouse']['server']) || !is_array($this->config['env']['clickhouse']['server'])) throw new Exception('not a valid clickhouse srever config');
+        if(!isset($this->config['env']['clickhouse']['dsn'])) throw new Exception('not a valid clickhouse srever config');
         if(!isset($this->config['tails']) || !is_array($this->config['tails'])) throw new Exception('not a valid tails config');
     }
 

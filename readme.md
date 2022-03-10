@@ -36,12 +36,9 @@ return [
 //            'php' => '/usr/bin/php', // Optional configuration, the path to which the php bin file belongs
 //        ],
         'clickhouse' => [ // Required configuration
-            'server' => [
-                'host' => '192.168.37.205',
-                'port' => '8123',
-                'username' => 'default',
-                'password' => '',
-            ],
+            'dsn' => 'tcp://192.168.37.205:9000',
+            'username' => 'default',
+            'password' => '',
             'database' => 'logs', // Database name
             'table' => 'repo', // Table name
         ],

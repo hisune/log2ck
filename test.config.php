@@ -13,12 +13,9 @@ return [
 //            'php' => '/usr/bin/php',
 //        ],
         'clickhouse' => [
-            'server' => [
-                'host' => '192.168.37.205',
-                'port' => '8123',
-                'username' => 'default',
-                'password' => '',
-            ],
+            'dsn' => 'tcp://192.168.37.205:9000',
+            'username' => 'default',
+            'password' => '',
             'database' => 'logs', // 入库名称
             'table' => 'repo', // 入库表
         ],

@@ -8,7 +8,7 @@ declare(strict_types=1);
 
 namespace Hisune\Log2Ck;
 
-use ClickHouseDB\Client;
+use OneCk\Client;
 use Exception;
 use SplFileObject;
 use Throwable;
@@ -56,8 +56,7 @@ class Worker
 
     protected function initClickhouse()
     {
-        $this->db = new Client($this->getClickhouseParam('server'));
-        $this->db->database($this->getClickhouseParam('database'));
+        $this->db = new Client($this->getClickhouseParam('dsn'), $this->getClickhouseParam('username'), $this->getClickhouseParam('password'), $this->getClickhouseParam('database'));
     }
 
     public function run()
@@ -97,7 +96,7 @@ class Worker
                             $data['repo'] = $this->tail['repo'];
                             $data['name'] = $this->name;
                             $data['host'] = $this->tail['host'] ?? gethostname();
-                            $this->db->insert($this->getClickhouseParam('table'), [$data], array_keys($data));
+                            $this->db->insert($this->getClickhouseParam('table'), [$data]);
                         }else{
                             $this->logger('worker', sprintf('not valid data: %s, stdin: %s', $this->tail['path'], json_encode($data)));
                         }

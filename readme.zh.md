@@ -36,12 +36,9 @@ return [
 //            'php' => '/usr/bin/php', // 可选配置，php bin文件所属路径
 //        ],
         'clickhouse' => [ // 必须的配置
-            'server' => [
-                'host' => '192.168.37.205',
-                'port' => '8123',
-                'username' => 'default',
-                'password' => '',
-            ],
+            'dsn' => 'tcp://192.168.37.205:9000',
+            'username' => 'default',
+            'password' => '',
             'database' => 'logs', // 入库名称
             'table' => 'repo', // 入库表
         ],

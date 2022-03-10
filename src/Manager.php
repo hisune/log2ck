@@ -42,7 +42,7 @@ class Manager
         }
     }
 
-    protected function killWorker(string $name)
+    public function killWorker(string $name)
     {
         $cmd = "kill " . $this->workers[$name]['pid'];
         exec($cmd);
@@ -107,7 +107,7 @@ class Manager
         }
     }
 
-    protected function stopProcess()
+    public function stopProcess()
     {
         foreach($this->workers as $name => $worker){
             $this->killWorker($name);

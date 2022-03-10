@@ -147,7 +147,7 @@ class Worker
         return $this->tail['clickhouse'][$key] ?? $this->config['env']['clickhouse'][$key];
     }
 
-    protected function stopProcess()
+    public function stopProcess()
     {
         $this->logger('worker', sprintf('stop process %s gracefully', $this->name));
         $this->onProcess = false;

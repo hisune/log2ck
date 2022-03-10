@@ -42,7 +42,7 @@ trait ToolsTraits
         return $this->loggerDir;
     }
 
-    protected function handelSignal()
+    public function handelSignal()
     {
         pcntl_async_signals(true);
         pcntl_signal(SIGTERM, [$this, 'stopProcess']);

@@ -5,8 +5,6 @@
 
 此工具能将monolog标准log直接通过tcp协议实时写入clickhouse。如果你会写正则，其他标准化log也能支持。
 
-[English readme](https://github.com/hisune/log2ck/blob/main/readme.md)
-
 ### 特性
 - 极简代码
 - 高性能（在线上业务中对比cpu占用仅为`filebeat`的1/20）

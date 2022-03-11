@@ -29,6 +29,8 @@ class Worker
 
     protected $path;
 
+    protected $fileObject;
+
     protected $db;
 
     protected $cacheFilePath;
@@ -40,6 +42,8 @@ class Worker
     protected $sentCount = 0;
 
     protected $sentData = [];
+
+    protected $line = '';
 
     /**
      * @param string $name 日志名称，tails中的数组key
@@ -80,52 +84,28 @@ class Worker
             $this->initClickhouse();
             $this->logger('worker', sprintf('receive stdin: %s', $this->name));
 
-            $file = new SplFileObject($this->path);
-            $file->seek($this->getCurrentLines());
+            $this->fileObject = new SplFileObject($this->path);
+            $this->fileObject->seek($this->getCurrentLines());
             $this->sentLastAt = time();
+            $this->line = '';
             while($this->onProcess){
-                $now = time();
-                if($this->sentData && ($this->sentCount >= $this->getClickhouseParam('max_sent_count') || $now - $this->sentLastAt >  $this->getClickhouseParam('max_sent_wait'))){
-                    $this->db->insert($this->getClickhouseParam('table'), $this->sentData);
-                    $this->setCurrentLines($file->key()); // 记录最后位置
-                    $this->sentCount = 0;
-                    $this->sentData = [];
-                    $this->sentLastAt = $now;
-                }
-                $line = $file->current();
-                if($file->eof()){ // 没有新内容
+                $this->batchWrite();
+                $line = $this->fileObject->current();
+                if($this->fileObject->eof()){ // 没有新行
                     sleep(1);
-                    $file->fseek(0, SEEK_CUR);
+                    if($line){ // 处理未写入完整的行
+                        $this->line .= $line;
+                    }
+                    $this->fileObject->fseek(0, SEEK_CUR);
                     continue;
                 }
-                $file->next(); // 指针+1
-                $line = rtrim($line, PHP_EOL);
-                if($line){
-                    // 自定义正则或使用默认正则
-                    $pattern = $this->getPattern();
-                    if($pattern){
-                        preg_match($pattern, $line, $data);
-                        $data = array_filter($data, 'is_string', ARRAY_FILTER_USE_KEY);
-                    }else{
-                        $data = $line;
-                    }
-                    if($data){
-                        if(isset($this->tail['callback'])){
-                            $data = $this->tail['callback']($data);
-                        }
-                        if(is_array($data)){
-                            $data['repo'] = $this->tail['repo'];
-                            $data['name'] = $this->name;
-                            $data['host'] = $this->tail['host'] ?? gethostname();
-                            $this->sentCount++;
-                            $this->sentData[] = $data;
-                        }else{
-                            $this->logger('worker', sprintf('not valid data: %s, stdin: %s', $this->tail['path'], json_encode($data)));
-                        }
-                    }else{
-                        $this->logger('worker', sprintf('not valid line: %s, stdin: %s', $this->tail['path'], $line));
-                    }
+                $this->fileObject->next(); // 指针+1
+                $this->line .= $line;
+                $this->line = rtrim($this->line, PHP_EOL);
+                if($this->line){
+                    $this->progressLine();
                 }
+                $this->line = '';
             }
         }catch (Throwable $e){
             $this->logger('worker', sprintf('%s worker_exception: %s', $this->name, $e->getMessage()), [
@@ -135,6 +115,46 @@ class Worker
             ]);
             sleep(10);
             $this->run();
+        }
+    }
+
+    protected function batchWrite()
+    {
+        $now = time();
+        if($this->sentData && ($this->sentCount >= $this->getClickhouseParam('max_sent_count') || $now - $this->sentLastAt >  $this->getClickhouseParam('max_sent_wait'))){
+            $this->db->insert($this->getClickhouseParam('table'), $this->sentData);
+            $this->setCurrentLines($this->fileObject->key()); // 记录最后位置
+            $this->sentCount = 0;
+            $this->sentData = [];
+            $this->sentLastAt = $now;
+        }
+    }
+
+    protected function progressLine()
+    {
+        // 自定义正则或使用默认正则
+        $pattern = $this->getPattern();
+        if($pattern){
+            preg_match($pattern, $this->line, $data);
+            $data = array_filter($data, 'is_string', ARRAY_FILTER_USE_KEY);
+        }else{
+            $data = $this->line;
+        }
+        if($data){
+            if(isset($this->tail['callback'])){
+                $data = $this->tail['callback']($data);
+            }
+            if(is_array($data)){
+                $data['repo'] = $this->tail['repo'];
+                $data['name'] = $this->name;
+                $data['host'] = $this->tail['host'] ?? gethostname();
+                $this->sentCount++;
+                $this->sentData[] = $data;
+            }else{
+                $this->logger('worker', sprintf('not valid data: %s, stdin: %s', $this->tail['path'], json_encode($data)));
+            }
+        }else{
+            $this->logger('worker', sprintf('not valid line: %s, stdin: %s', $this->tail['path'], $this->line));
         }
     }
 

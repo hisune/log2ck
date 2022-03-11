@@ -1,9 +1,9 @@
 ## log2ck
+English | [中文](./readme.zh.md)
+
 [![Latest Stable Version](http://poser.pugx.org/hisune/log2ck/v)](https://packagist.org/packages/hisune/log2ck) [![Total Downloads](http://poser.pugx.org/hisune/log2ck/downloads)](https://packagist.org/packages/hisune/log2ck) [![Latest Unstable Version](http://poser.pugx.org/hisune/log2ck/v/unstable)](https://packagist.org/packages/hisune/log2ck) [![License](http://poser.pugx.org/hisune/log2ck/license)](https://packagist.org/packages/hisune/log2ck) [![PHP Version Require](http://poser.pugx.org/hisune/log2ck/require/php)](https://packagist.org/packages/hisune/log2ck)
 
 This tool can write the monolog standard log directly to clickhouse in real time via the tcp protocol. If you can write regular rules, other standardized log can also support it.
-
-[中文readme](https://github.com/hisune/log2ck/blob/main/readme.zh.md)
 
 ### Feature
 - Minimalist code

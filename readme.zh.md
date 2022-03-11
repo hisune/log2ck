@@ -1,4 +1,6 @@
 ## log2ck
+[English](./readme.md) | 中文
+
 [![Latest Stable Version](http://poser.pugx.org/hisune/log2ck/v)](https://packagist.org/packages/hisune/log2ck) [![Total Downloads](http://poser.pugx.org/hisune/log2ck/downloads)](https://packagist.org/packages/hisune/log2ck) [![Latest Unstable Version](http://poser.pugx.org/hisune/log2ck/v/unstable)](https://packagist.org/packages/hisune/log2ck) [![License](http://poser.pugx.org/hisune/log2ck/license)](https://packagist.org/packages/hisune/log2ck) [![PHP Version Require](http://poser.pugx.org/hisune/log2ck/require/php)](https://packagist.org/packages/hisune/log2ck)
 
 此工具能将monolog标准log直接通过tcp协议实时写入clickhouse。如果你会写正则，其他标准化log也能支持。

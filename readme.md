@@ -7,7 +7,7 @@ This tool can write the monolog standard log directly to clickhouse in real time
 
 ### Feature
 - Minimalist code
-- High performance (compared with online services, the cpu usage is only 1/20 of `filebeat`)
+- High performance (Verify that the cpu usage in online business is only 1/20 of `filebeat`)
 - No dependence on third-party services (such as queues, etc.)
 - Configurationalization
 - Customization (custom regularization, line processing callback functions)

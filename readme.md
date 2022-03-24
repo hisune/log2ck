@@ -39,8 +39,7 @@ require_once 'vendor/autoload.php';
 # Begin execution 
 php manager.php
 ```
-默认能在`vendor/hisune/log2ck/logs/`目录看到manager和worker的执行日志。你也可以通过配置文件修改这两个日志的存放路径。
-
+By default, the manager and worker execution logs can be seen in the `vendor/hisune/log2ck/logs/` directory. You can also modify the storage path of these two logs through the configuration file.
 
 ### config.php Configuration example
 ```php

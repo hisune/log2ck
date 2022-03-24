@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace Hisune\Log2Ck;
 
+use OneCk\CkException;
 use OneCk\Client;
 use Exception;
 use SplFileObject;
@@ -64,6 +65,9 @@ class Worker
         }
     }
 
+    /**
+     * @throws CkException
+     */
     protected function initClickhouse()
     {
         $this->db = new Client(
@@ -170,7 +174,7 @@ class Worker
      * 获取最后读取行数，如果没有写入文件，则设置为文件最后一行
      * @return int
      */
-    protected function getCurrentLines()
+    protected function getCurrentLines(): int
     {
         if(file_exists($this->cacheFilePath)){
             return (int)file_get_contents($this->cacheFilePath);

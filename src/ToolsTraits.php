@@ -11,6 +11,9 @@ trait ToolsTraits
 
     protected $loggerDir;
 
+    /**
+     * @throws Exception
+     */
     protected function initConfig($configPath)
     {
         ini_set('error_log', $this->getLoggerDir() . 'error.log');

@@ -7,6 +7,7 @@
 declare(strict_types=1);
 namespace Hisune\Log2Ck;
 
+use Exception;
 use Throwable;
 
 if (php_sapi_name() != 'cli') exit();
@@ -17,6 +18,9 @@ class Manager
 
     protected $workers = [];
 
+    /**
+     * @throws Exception
+     */
     public function __construct(string $configPath)
     {
         $this->initConfig($configPath);

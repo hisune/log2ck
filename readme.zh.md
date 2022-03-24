@@ -20,14 +20,26 @@
 2. 待读取的日志必须是一行一条，例如monolog需要设置formatter为：`allowInlineLineBreaks' => false`
 
 ### 使用方法
-```php
+```shell
+# 安装
 composer require "hisune/log2ck"
-# vim manager.php
+# 修改config.php为你要的配置
+cp vendor/hisune/log2ck/test.config.php config.php
+# 创建manager
+vim manager.php
+```
+manager.php文件内容举例：
+```php
+<?php
 use Hisune\Log2Ck\Manager;
 require_once 'vendor/autoload.php';
 (new Manager(__DIR__ . DIRECTORY_SEPARATOR . 'config.php'))->run();
-# php manager.php
 ```
+```shell
+# 开始执行
+php manager.php
+```
+默认能在`vendor/hisune/log2ck/logs/`目录看到manager和worker的执行日志。你也可以通过配置文件修改这两个日志的存放路径。
 
 ### config.php配置举例
 ```php
@@ -62,15 +74,15 @@ return [
     'tails' => [
         'access' => [ // key为日志名称，对应clickhouse的name字段
             'repo' => 'api2', // 日志所属的项目名称
-            'path' => '/mnt/c/access.log', // 日志路径，固定文件名日志
-//            'host' => 'host1', // 自定义hostname，未设置默认为服务器主机名，对应clickhouse的host字段
-//            'path' => '/mnt/c/access-{date}.log', // 日志路径，每日一个文件名的日志，当前只支持{date}一个宏变量，date格式举例：2022-02-22
+            'path' => '/mnt/c/access.log', // 类型1：日志路径，固定文件名日志
+//            'path' => '/mnt/c/access-{date}.log', // 类型2：日志路径，每日一个文件名的日志，当前只支持{date}一个宏变量，date格式举例：2022-02-22
+//            'host' => 'host1', // 自定义hostname，未设置默认为服务器主机名。对应clickhouse的host字段
 //            'pattern' => '/\[(?P<created_at>.*)\] (?P<logger>\w+).(?P<level>\w+): (?P<message>.*[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/', // 可选配置，如果不需要正则处理，设置为false
 //            'callback' => function($data) { // 可选配置，对这行数据按自定义回调方法进行处理，方法内容可以自行实现任何清洗此条流水的逻辑
 //                $data['message'] = 'xxoo'; // 举例，自定义处理这个数据
-//                return $data;
+//                return $data; // 需要返回数组，key为clickhouse中表字段名，value为存储的值
 //            }
-//            'clickhouse' => [...] // 也可以对单独的项目配置clickhouse连接信息，配置内容同env的clickhouse数组
+//            'clickhouse' => [...] // 也可以对单独的日志配置clickhouse连接信息，配置内容同env的clickhouse数组
         ],
     ],
 ];

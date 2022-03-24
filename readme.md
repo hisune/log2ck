@@ -20,14 +20,27 @@ This tool can write the monolog standard log directly to clickhouse in real time
 2. The log to be read must be one line at a time. For example, monolog needs to set the formatter to: `'allowInlineLineBreaks'= > false`
 
 ### How to use
-```php
+```shell
+# Install
 composer require "hisune/log2ck"
-# vim manager.php
+# Modify config.php to the configuration you want 
+cp vendor/hisune/log2ck/test.config.php config.php
+# Create manager
+vim manager.php
+```
+Example of the content of the `manager.php` file:
+```php
+<?php
 use Hisune\Log2Ck\Manager;
 require_once 'vendor/autoload.php';
 (new Manager(__DIR__ . DIRECTORY_SEPARATOR . 'config.php'))->run();
-# php manager.php
 ```
+```shell
+# Begin execution 
+php manager.php
+```
+默认能在`vendor/hisune/log2ck/logs/`目录看到manager和worker的执行日志。你也可以通过配置文件修改这两个日志的存放路径。
+
 
 ### config.php Configuration example
 ```php
@@ -62,13 +75,13 @@ return [
     'tails' => [
         'access' => [ // Key is the log name, corresponding to the name field of clickhouse
             'repo' => 'api2', // The name of the project to which the log belongs
-            'path' => '/mnt/c/access.log', // Log path, fixed file name log
+            'path' => '/mnt/c/access.log', // eg: Log path, fixed file name log
+//            'path' => '/mnt/c/access-{date}.log', // eg: Log path, a daily log with a file name, currently only one macro variable {date} is supported. For example, the date format: 2022-02-22
 //            'host' => 'host1', // Customize the host name, the default is the server host name if it is not set, which corresponds to the host field of clickhouse
-//            'path' => '/mnt/c/access-{date}.log', // Log path, a daily log with a file name, currently only one macro variable {date} is supported. For example, the date format: 2022-02-22
 //            'pattern' => '/\[(?P<created_at>.*)\] (?P<logger>\w+).(?P<level>\w+): (?P<message>.*[^ ]+) (?P<context>[^ ]+) (?P<extra>[^ ]+)/', // Optional configuration, if regular processing is not required, set to false
 //            'callback' => function($data) { // Optional configuration, this line of data is processed according to a custom callback method, and the content of the method can implement any logic for cleaning this stream by itself.
 //                $data['message'] = 'xxoo'; // For example, customize the processing of this data
-//                return $data;
+//                return $data; // Need to return an array, key is the field name of the table in clickhouse, and value is the stored value
 //            }
 //            'clickhouse' => [...] // You can also configure the clickhouse connection information for individual projects, and the configuration content is the same as the clickhouse array of env.
         ],

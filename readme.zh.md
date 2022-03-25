@@ -91,7 +91,7 @@ return [
 
 ### supervisord
 推荐使用supervisor管理你的manager进程。
-```conf
+```ini
 [program:log2ck]
 directory=/data/log2ck
 command=php manager.php

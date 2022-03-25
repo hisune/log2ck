@@ -91,7 +91,7 @@ return [
 
 ### supervisord
 It is recommended to use supervisor to manage your manager process.
-```conf
+```ini
 [program:log2ck]
 directory=/data/log2ck
 command=php manager.php

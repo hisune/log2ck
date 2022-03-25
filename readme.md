@@ -21,7 +21,7 @@ This tool can write the monolog standard log directly to clickhouse in real time
 2. The log to be read must be one line at a time. For example, monolog needs to set the formatter to: `'allowInlineLineBreaks'= > false`
 
 ### How to use
-```shell
+```sh
 # Install
 composer require "hisune/log2ck"
 # Modify config.php to the configuration you want 
@@ -36,7 +36,7 @@ use Hisune\Log2Ck\Manager;
 require_once 'vendor/autoload.php';
 (new Manager(__DIR__ . DIRECTORY_SEPARATOR . 'config.php'))->run();
 ```
-```shell
+```sh
 # Begin execution 
 php manager.php
 ```

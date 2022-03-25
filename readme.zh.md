@@ -21,7 +21,7 @@
 2. 待读取的日志必须是一行一条，例如monolog需要设置formatter为：`allowInlineLineBreaks' => false`
 
 ### 使用方法
-```shell
+```sh
 # 安装
 composer require "hisune/log2ck"
 # 修改config.php为你要的配置
@@ -36,7 +36,7 @@ use Hisune\Log2Ck\Manager;
 require_once 'vendor/autoload.php';
 (new Manager(__DIR__ . DIRECTORY_SEPARATOR . 'config.php'))->run();
 ```
-```shell
+```sh
 # 开始执行
 php manager.php
 ```

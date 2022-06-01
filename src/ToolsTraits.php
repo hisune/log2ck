@@ -26,7 +26,7 @@ trait ToolsTraits
         if(!isset($this->config['tails']) || !is_array($this->config['tails'])) throw new Exception('not a valid tails config');
     }
 
-    protected function logger(string $name, string $message, $context = [])
+    public function logger(string $name, string $message, $context = [])
     {
         $line = date('Y-m-d H:i:s') . "\t" . $message . "\t" . (!is_scalar($context) ? json_encode($context, JSON_UNESCAPED_UNICODE) : $context) . PHP_EOL;
         echo $line;

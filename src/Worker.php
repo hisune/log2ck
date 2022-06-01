@@ -81,44 +81,34 @@ class Worker
 
     public function run()
     {
-        try{
-            $this->handelSignal();
+        $this->handelSignal();
 
-            $this->logger('worker', sprintf('start worker name: %s, path %s, config %s', $this->name, $this->path, $this->configPath));
-            $this->initClickhouse();
-            $this->logger('worker', sprintf('receive stdin: %s', $this->name));
+        $this->logger('worker', sprintf('start worker name: %s, path %s, config %s', $this->name, $this->path, $this->configPath));
+        $this->initClickhouse();
+        $this->logger('worker', sprintf('receive stdin: %s', $this->name));
 
-            $this->fileObject = new SplFileObject($this->path);
-            $this->fileObject->seek($this->getCurrentLines());
-            $this->sentLastAt = time();
-            $this->line = '';
-            while($this->onProcess){
-                $this->batchWrite();
-                $line = $this->fileObject->current();
-                if($this->fileObject->eof()){ // 没有新行
-                    sleep(1);
-                    if($line){ // 处理未写入完整的行
-                        $this->line .= $line;
-                    }
-                    $this->fileObject->fseek(0, SEEK_CUR);
-                    continue;
+        $this->fileObject = new SplFileObject($this->path);
+        $this->fileObject->seek($this->getCurrentLines());
+        $this->sentLastAt = time();
+        $this->line = '';
+        while($this->onProcess){
+            $this->batchWrite();
+            $line = $this->fileObject->current();
+            if($this->fileObject->eof()){ // 没有新行
+                sleep(1);
+                if($line){ // 处理未写入完整的行
+                    $this->line .= $line;
                 }
-                $this->fileObject->next(); // 指针+1
-                $this->line .= $line;
-                $this->line = rtrim($this->line, PHP_EOL);
-                if($this->line){
-                    $this->progressLine();
-                }
-                $this->line = '';
+                $this->fileObject->fseek(0, SEEK_CUR);
+                continue;
             }
-        }catch (Throwable $e){
-            $this->logger('worker', sprintf('%s worker_exception: %s', $this->name, $e->getMessage()), [
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            sleep(10);
-            $this->run();
+            $this->fileObject->next(); // 指针+1
+            $this->line .= $line;
+            $this->line = rtrim($this->line, PHP_EOL);
+            if($this->line){
+                $this->progressLine();
+            }
+            $this->line = '';
         }
     }
 
@@ -201,4 +191,19 @@ class Worker
 }
 
 $index = isset($argv[4]) ? intval($argv[4]) :  null;
-(new Worker($argv[1], $argv[2], $argv[3], $index))->run();
+$worker = new Worker($argv[1], $argv[2], $argv[3], $index);
+while (true){
+    try{
+        $worker->run();
+        exit();
+    }catch (Throwable $e){
+        $worker->logger('worker', sprintf('%s worker_exception: %s', $argv[1], $e->getMessage()), [
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString(),
+        ]);
+        sleep(10);
+        $worker->logger('worker', 'memory usage: ' . memory_get_usage());
+    }
+}
+

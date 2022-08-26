@@ -188,6 +188,11 @@ class Worker
         $this->onProcess = false;
     }
 
+    public function getSentData(): array
+    {
+        return $this->sentData;
+    }
+
 }
 
 $index = isset($argv[4]) ? intval($argv[4]) :  null;
@@ -201,6 +206,7 @@ while (true){
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'trace' => $e->getTraceAsString(),
+            'data' => $worker->getSentData(),
         ]);
         sleep(10);
         $worker->logger('worker', 'memory usage: ' . memory_get_usage());

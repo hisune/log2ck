@@ -168,7 +168,7 @@ class Worker
      * 获取最后读取行数，如果没有写入文件，则设置为文件最后一行
      * @return int
      */
-    protected function getCurrentLines(): int
+    public function getCurrentLines(): int
     {
         if(file_exists($this->cacheFilePath)){
             return (int)file_get_contents($this->cacheFilePath);
@@ -208,12 +208,14 @@ while (true){
     }catch (Throwable $e){
         $worker->logger('worker', sprintf('%s worker_exception: %s', $argv[1], $e->getMessage()), [
             'file' => $e->getFile(),
+            'current' => $worker->getCurrentLines(),
             'line' => $e->getLine(),
             'trace' => $e->getTraceAsString(),
             'data' => $worker->getSentData(),
+            'memory' => memory_get_usage(),
         ]);
         sleep(10);
-        $worker->logger('worker', 'memory usage: ' . memory_get_usage());
+        exit();
     }
 }
 

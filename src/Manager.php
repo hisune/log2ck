@@ -60,6 +60,11 @@ class Manager
 
         foreach($this->config['tails'] as $name => $tail){
             $index = null; // 是否指定文件开始的index
+            // 进程已经不在了
+            if(!posix_kill($this->workers[$name]['pid'], 0)){
+                $this->logger('manager', sprintf('worker dead %s: %s', $name, $this->workers[$name]['pid']));
+                unset($this->workers[$name]);
+            }
             /**
              * 判断是否已经跨天了
              * time() - mktime()为延迟几秒，防止前一个log内容没写完导致上报不完整

@@ -61,7 +61,7 @@ class Manager
         foreach($this->config['tails'] as $name => $tail){
             $index = null; // 是否指定文件开始的index
             // 进程已经不在了
-            if(!posix_kill($this->workers[$name]['pid'], 0)){
+            if(isset($this->workers[$name]['pid']) && !posix_kill($this->workers[$name]['pid'], 0)){
                 $this->logger('manager', sprintf('worker dead %s: %s', $name, $this->workers[$name]['pid']));
                 unset($this->workers[$name]);
             }

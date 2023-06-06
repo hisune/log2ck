@@ -87,6 +87,10 @@ class Worker
         $this->initClickhouse();
         $this->logger('worker', sprintf('receive stdin: %s', $this->name));
 
+        if(!file_exists($this->path)){
+            $this->logger('worker', sprintf('file not exists: %s', $this->path));
+            exit();
+        }
         $this->fileObject = new SplFileObject($this->path);
         $this->fileObject->seek($this->getCurrentLines());
         $this->sentLastAt = time();
